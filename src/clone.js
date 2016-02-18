@@ -92,6 +92,8 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
                             documentClone.documentElement.style.left = (-x) + "px";
                             documentClone.documentElement.style.position = 'absolute';
                         }
+                    } else {
+                        container.contentWindow.scrollTo(0, 0);
                     }
                     resolve(container);
                 }

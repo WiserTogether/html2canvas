@@ -622,11 +622,11 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
          if window url is about:blank, we can assign the url to current by writing onto the document
          */
         container.contentWindow.onload = container.onload = function() {
-            if (container.height === 0) {
-                container.height = documentClone.body.scrollHeight;
-            }
-
             var interval = setInterval(function() {
+                if (parseInt(container.height) < 0) {
+                    container.height = documentClone.body.scrollHeight;
+                }
+
                 if (documentClone.body.childNodes.length > 0) {
                     initNode(documentClone.documentElement);
                     clearInterval(interval);
@@ -637,6 +637,8 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
                             documentClone.documentElement.style.left = (-x) + "px";
                             documentClone.documentElement.style.position = 'absolute';
                         }
+                    } else {
+                        container.contentWindow.scrollTo(0, 0);
                     }
                     resolve(container);
                 }

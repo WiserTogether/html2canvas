@@ -1,3 +1,5 @@
+require('./promise').polyfill();
+
 var Support = require('./support');
 var CanvasRenderer = require('./renderers/canvas');
 var ImageLoader = require('./imageloader');

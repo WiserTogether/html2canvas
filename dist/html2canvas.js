@@ -1341,10 +1341,14 @@ function ImageContainer(src, cors) {
     this.promise = new Promise(function(resolve, reject) {
         self.image.onload = resolve;
         self.image.onerror = reject;
+
         if (cors) {
             self.image.crossOrigin = "anonymous";
+            self.image.src = src + '?_nocache=' + Date.now();
+        } else {
+            self.image.src = src;
         }
-        self.image.src = src;
+
         if (self.image.complete === true) {
             resolve(self.image);
         }

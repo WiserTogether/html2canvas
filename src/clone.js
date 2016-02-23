@@ -36,7 +36,7 @@ function cloneNode(node, javascriptEnabled) {
             cloneCanvasContents(node, clone);
         } else if (node.nodeName === "TEXTAREA" || node.nodeName === "SELECT") {
             clone.value = node.value;
-        } else if (node.nodeName === "STYLE" && clone.media === 'print') {
+        } else if ((node.nodeName === "STYLE" || node.nodeName === 'LINK') && clone.media === 'print') {
             $(clone).removeAttr('media');
         }
     }

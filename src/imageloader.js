@@ -60,7 +60,11 @@ ImageLoader.prototype.hasImageBackground = function(imageData) {
 ImageLoader.prototype.loadImage = function(imageData) {
     if (imageData.method === "url") {
         var src = imageData.args[0];
-        if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) {
+        if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) { 
+            if (/Edge\/|Trident\/|MSIE /.test(window.navigator.userAgent)) {
+                return new DummyImageContainer(src);
+            }
+
             return new SVGContainer(src);
         } else if (src.match(/data:image\/.*;base64,/i)) {
             return new ImageContainer(src.replace(/url\(['"]{0,}|['"]{0,}\)$/ig, ''), false);

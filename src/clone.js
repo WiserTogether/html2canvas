@@ -36,6 +36,8 @@ function cloneNode(node, javascriptEnabled) {
             cloneCanvasContents(node, clone);
         } else if (node.nodeName === "TEXTAREA" || node.nodeName === "SELECT") {
             clone.value = node.value;
+        } else if (node.nodeName === "STYLE" && clone.media === 'print') {
+            $(clone).removeAttr('media');
         }
     }
 
@@ -81,7 +83,7 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
                 if (parseInt(container.height) < 0) {
                     container.height = documentClone.body.scrollHeight;
                 }
-                
+
                 if (documentClone.body.childNodes.length > 0) {
                     initNode(documentClone.documentElement);
                     clearInterval(interval);

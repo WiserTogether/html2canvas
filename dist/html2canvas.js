@@ -674,6 +674,8 @@ function cloneNode(node, javascriptEnabled) {
             cloneCanvasContents(node, clone);
         } else if (node.nodeName === "TEXTAREA" || node.nodeName === "SELECT") {
             clone.value = node.value;
+        } else if (node.nodeName === "STYLE" && clone.media === 'print') {
+            $(clone).removeAttr('media');
         }
     }
 
@@ -719,7 +721,7 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
                 if (parseInt(container.height) < 0) {
                     container.height = documentClone.body.scrollHeight;
                 }
-                
+
                 if (documentClone.body.childNodes.length > 0) {
                     initNode(documentClone.documentElement);
                     clearInterval(interval);
@@ -1421,6 +1423,10 @@ ImageLoader.prototype.loadImage = function(imageData) {
     if (imageData.method === "url") {
         var src = imageData.args[0];
         if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) {
+            if (/Edge\/|Trident\/|MSIE /.test(window.navigator.userAgent)) {
+                return new DummyImageContainer(src);
+            }
+
             return new SVGContainer(src);
         } else if (src.match(/data:image\/.*;base64,/i)) {
             return new ImageContainer(src.replace(/url\(['"]{0,}|['"]{0,}\)$/ig, ''), false);

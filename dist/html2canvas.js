@@ -1422,11 +1422,14 @@ ImageLoader.prototype.hasImageBackground = function(imageData) {
 ImageLoader.prototype.loadImage = function(imageData) {
     if (imageData.method === "url") {
         var src = imageData.args[0];
-        if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) {
-            if (/Edge\/|Trident\/|MSIE /.test(window.navigator.userAgent)) {
-                return new DummyImageContainer(src);
-            }
 
+        // IE implements CORS, except for canvas tainting
+        if (!this.isSameOrigin(src) && !this.options.allowTaint && this.isIE()) {
+            throw ('Unable to load img due to IE CORS tainting canvas: ' + src);
+            return new DummyImageContainer(src);
+        }
+
+        if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) {
             return new SVGContainer(src);
         } else if (src.match(/data:image\/.*;base64,/i)) {
             return new ImageContainer(src.replace(/url\(['"]{0,}|['"]{0,}\)$/ig, ''), false);
@@ -1450,6 +1453,10 @@ ImageLoader.prototype.loadImage = function(imageData) {
     } else {
         return new DummyImageContainer(imageData);
     }
+};
+
+ImageLoader.prototype.isIE = function() {
+    return /Edge\/|Trident\/|MSIE /.test(window.navigator.userAgent);
 };
 
 ImageLoader.prototype.isSVG = function(src) {
